@@ -13,7 +13,7 @@ GIT
       rake
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     addressable (2.3.6)
     builder (3.2.2)
