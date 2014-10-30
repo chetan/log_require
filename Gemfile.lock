@@ -1,3 +1,17 @@
+GIT
+  remote: https://github.com/chetan/jeweler.git
+  revision: b90381a3958daae7f3ce3d8c4d710fe39e72443b
+  branch: bixby
+  specs:
+    jeweler (2.0.1)
+      builder
+      bundler (>= 1.0)
+      git (>= 1.2.5)
+      github_api
+      highline (>= 1.6.15)
+      nokogiri (>= 1.5.10)
+      rake
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -8,24 +22,16 @@ GEM
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     git (1.2.8)
-    github_api (0.12.1)
+    github_api (0.12.2)
       addressable (~> 2.3)
       descendants_tracker (~> 0.0.4)
       faraday (~> 0.8, < 0.10)
-      hashie (>= 3.2)
+      hashie (>= 3.3)
       multi_json (>= 1.7.5, < 2.0)
       nokogiri (~> 1.6.3)
       oauth2
     hashie (3.3.1)
     highline (1.6.21)
-    jeweler (2.0.1)
-      builder
-      bundler (>= 1.0)
-      git (>= 1.2.5)
-      github_api
-      highline (>= 1.6.15)
-      nokogiri (>= 1.5.10)
-      rake
     jwt (1.0.0)
     mini_portile (0.6.0)
     multi_json (1.10.1)
@@ -49,5 +55,5 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.0)
-  jeweler (~> 2.0)
+  jeweler (~> 2.0)!
   yard (~> 0.7)
