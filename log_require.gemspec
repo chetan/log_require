@@ -30,7 +30,14 @@ Gem::Specification.new do |s|
     "lib/log_require/flat.rb",
     "lib/log_require/graph.rb",
     "lib/log_require/node.rb",
-    "log_require.gemspec"
+    "log_require.gemspec",
+    "test/a.rb",
+    "test/b.rb",
+    "test/c.rb",
+    "test/d.rb",
+    "test/e.rb",
+    "test/f.rb",
+    "test/g.rb"
   ]
   s.homepage = "http://github.com/chetan/log_require"
   s.licenses = ["MIT"]
