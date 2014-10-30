@@ -1,5 +1,44 @@
 
+require "log_require/flat"
+require "log_require/graph"
+require "log_require/node"
+
 module LogRequire
+
+  def self.graph?
+    !ENV["LOG_REQUIRE_GRAPH"].nil?
+  end
+
+  def self.file?
+    !ENV["LOG_REQUIRE"].nil?
+  end
+
+  def self.setup
+    io = if file? then
+      File.open(ENV["LOG_REQUIRE"], 'w')
+    else
+      STDERR
+    end
+
+    if graph? then
+      $log_require_stack = []
+      $log_require_frame = Node.root
+      Kernel.include(LogRequire::Graph)
+      at_exit do
+        io.puts
+        io.puts LogRequire::Node.root.to_graph_s()
+        LogRequire::Node.root.print_children(io)
+      end
+
+    else
+      $log_require = io
+      if file? then
+        io.puts "require name,caller,line number"
+      end
+      Kernel.include(LogRequire::Flat)
+    end
+  end
+
   def self.clean_caller(c)
     if c =~ %r{ruby-[\d.]+/gems/(.*):(\d+):in `.*$} ||
        c =~ %r{(ruby-[\d.]+/lib/ruby/[\d.]+/.*):(\d+):in `.*$} ||
@@ -9,35 +48,21 @@ module LogRequire
        return [$1, $2]
     end
   end
+
+  def self.find_caller(arr, c)
+    arr.each do |s|
+      if s =~ /#{c}:\d+:in/ then
+        return true
+      end
+    end
+    false
+  end
 end
 
 module Kernel
 
   if !method_defined?(:log_require) then
-
-    # Log the `require` call to STDERR or, optionally, a file
-    def log_require(name)
-
-      # cleanup the caller name (only interested in path relative to gem or lib)
-      c = caller.first
-      c, l = LogRequire.clean_caller(c)
-
-      if ENV["LOG_REQUIRE"] then
-        if $log_require.nil? then
-          $log_require = File.open(ENV["LOG_REQUIRE"], 'w')
-          $log_require.puts "require name,caller,line number"
-        end
-        $log_require.puts "#{name},#{c},#{l}"
-
-      else
-        pad = 110-name.length
-        pad = pad > 0 ? pad : 1
-        pad = (" " * pad)
-        STDERR.puts "require: #{name}#{pad}>> #{c}:#{l}"
-      end
-
-      return require_without_log(name)
-    end
+    LogRequire.setup
     alias_method :require_without_log, :require
     alias_method :require, :log_require
   end
