@@ -1,4 +1,16 @@
 
+module LogRequire
+  def self.clean_caller(c)
+    if c =~ %r{ruby-[\d.]+/gems/(.*):(\d+):in `.*$} ||
+       c =~ %r{(ruby-[\d.]+/lib/ruby/[\d.]+/.*):(\d+):in `.*$} ||
+       c =~ %r{(ruby/site_ruby/[\d.]+/.*):(\d+):in `.*$} ||
+       c =~ %r{^(.*?):(\d+):in `.*$} then
+
+       return [$1, $2]
+    end
+  end
+end
+
 module Kernel
 
   if !method_defined?(:log_require) then
@@ -8,14 +20,7 @@ module Kernel
 
       # cleanup the caller name (only interested in path relative to gem or lib)
       c = caller.first
-      if c =~ %r{ruby-[\d.]+/gems/(.*):(\d+):in `.*$} ||
-         c =~ %r{(ruby-[\d.]+/lib/ruby/[\d.]+/.*):(\d+):in `.*$} ||
-         c =~ %r{(ruby/site_ruby/[\d.]+/.*):(\d+):in `.*$} ||
-         c =~ %r{^(.*?):(\d+):in `.*$} then
-
-        c = $1
-        l = $2
-      end
+      c, l = LogRequire.clean_caller(c)
 
       if ENV["LOG_REQUIRE"] then
         if $log_require.nil? then
