@@ -1,6 +1,4 @@
 
-require "log_require/flat"
-require "log_require/graph"
 require "log_require/node"
 
 module LogRequire
@@ -12,6 +10,14 @@ module LogRequire
   def self.file?
     !ENV["LOG_REQUIRE"].nil?
   end
+
+  if graph?
+    require "log_require/graph"
+  else
+    require "log_require/flat"
+  end
+
+  EPOCH = Time.new.to_f
 
   def self.setup
     io = if file? then
@@ -33,7 +39,7 @@ module LogRequire
     else
       $log_require = io
       if file? then
-        io.puts "require name,caller,line number"
+        io.puts "elapsed time,require name,caller,line number"
       end
       Kernel.include(LogRequire::Flat)
     end
